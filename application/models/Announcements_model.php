@@ -109,5 +109,60 @@ class Announcements_model extends FNR_Model
     return $return;
   }
 
+  /**
+   * @param int         $page     Page now
+   * @param int|null    $per_page Announcement count per page
+   * @param null|string $query    Announcement query for search purpose
+   *
+   * @return array Announcement List
+   */
+  public function get(int $page = 1, ?int $per_page = 10, ?string $query = NULL)
+  : array
+  {
+    $this->log->write_log(
+      'debug',
+      $this->TAG . ': get: $page: ' . $page . ', $per_page: ' . $per_page
+    );
+    $total_page = 0;
+    if (empty($id)) {
+      $this->db->select('count(id) as count');
+      $this->db->from('announcements');
+      if ( ! empty($query)) {
+        $this->db->like('LOWER(title)', strtolower($query));
+      }
+      $result_count = $this->db->get()->result();
+      if ( ! empty($result_count)) {
+        $count = $result_count[0]->count;
+        $total_page = intdiv($count, $per_page);
+      }
+    }
+
+    $this->db->select('HEX(id) as id, title, link, date');
+    $this->db->order_by('date', 'DESC');
+    $this->db->limit($per_page, ($page - 1) * $per_page);
+    $this->db->from('announcements');
+    if ( ! empty($query)) {
+      $this->db->like('LOWER(title)', strtolower($query));
+    }
+    $result_announcement = $this->db->get()->result();
+
+    $announcement = [];
+    if ( ! empty($result_announcement)) {
+      foreach ($result_announcement as $item) {
+        $announcement[] = [
+          'id' => $item->id,
+          'title' => $item->title,
+          'link' => str_replace(' ', '%20', $item->link),
+          'date' => date("d/m/Y H:i:s", strtotime($item->date)),
+        ];
+      }
+    }
+
+    return [
+      'total_page' => $total_page,
+      'page_now' => $page,
+      'announcement' => $announcement
+    ];
+  }
 
 }
