@@ -1,0 +1,23 @@
+{
+ "description": "Filkom News Reader Server",
+ "name": "filkom-news-reader/server",
+ "type": "project",
+ "homepage": "http://filkom-news-reader.ngengs.com",
+ "license": "Apache",
+ "config": {
+  "vendor-dir": "application/vendor"
+ },
+ "require": {
+  "php": ">=7.1",
+  "guzzlehttp/guzzle": "~6.0",
+  "symfony/dom-crawler": "^3.3",
+  "symfony/css-selector": "^3.3"
+ },
+ "suggest": {
+  "paragonie/random_compat": "Provides better randomness in PHP 5.x"
+ },
+ "require-dev": {
+  "mikey179/vfsStream": "1.1.*",
+  "phpunit/phpunit": "4.* || 5.*"
+ }
+}

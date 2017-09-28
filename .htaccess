@@ -1,0 +1,40 @@
+########## Begin - RewriteEngine enabled
+RewriteEngine On
+########## End - RewriteEngine enabled
+ 
+########## Begin - RewriteBase
+# Uncomment following line if your webserver's URL
+# is not directly related to physical file paths.
+ 
+#RewriteBase /
+########## End - RewriteBase
+ 
+########## Begin - No directory listings
+## Note: +FollowSymlinks may cause problems and you might have to remove it
+IndexIgnore *
+#Options +FollowSymLinks All -Indexes
+Options -Indexes
+########## End - No directory listings
+
+
+########## Begin - File execution order, by Komra.de
+DirectoryIndex index.php index.html
+########## End - File execution order
+########## Begin - ETag Optimization
+## This rule will create an ETag for files based only on the modification
+## timestamp and their size. This works wonders if you are using rsync'ed
+## servers, where the inode number of identical files differs.
+## Note: It may cause problems on your server and you may need to remove it
+FileETag MTime Size
+########## End - ETag Optimization
+
+# System Direct
+# URL rewriting
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+ 
+RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+# End Rediect
+
+# Set CI Environment
+SetEnv CI_ENV development
