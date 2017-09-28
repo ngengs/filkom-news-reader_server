@@ -54,50 +54,59 @@ class Crawler extends FNR_Controller
 
   /**
    * Crawl list of news
-   *
-   * @return int|null News list count saved to db
    */
   private function crawl_news_list()
   {
     $news_list = [];
     // Get data from server
     $client = new GuzzleHttp\Client();
-    $base_url = $this->config->item('crawler_target');
-    $response = $client->get($base_url);
-    $body = (string)$response->getBody();
-    $result_insert_news = 0;
-    if ( ! empty($body)) {
-      $body_object = json_decode($body);
-      if ( ! empty($body_object)) {
-        $last_id = $this->news_model->get_last_id_web();
-        foreach ($body_object as $key => $value) {
-          if ( ! empty($last_id)) {
-            if ($last_id == $value->id) {
-              $this->log->write_log('info', $this->TAG . ': crawl_news_list: id exist: ' . $last_id);
-              break;
+    $exist = FALSE;
+    $result = $client->get(
+      $this->config->item('crawler_target'),
+      [
+        'headers' => ['Cookie' => ' lang-switch=in'] // Define cookies languague to Bahasa
+      ]);
+    $last = $this->news_model->get_last_id_web();
+    $crawler = new \Symfony\Component\DomCrawler\Crawler(
+      (string)$result->getBody(),
+      $this->config->item('crawler_target'));
+    $body = $crawler->filter('section[itemprop="articleBody"] .table.web-page-filkom tbody');
+    $body->children()->each(
+      function (\Symfony\Component\DomCrawler\Crawler $node, $i) use (&$news_list, &$exist, &$last) {
+        if ( ! $exist) {
+          $title = $node->filter('.title-article');
+          $date = $node->filter('time');
+          $link = $title->attr('href');
+          $desc = $node->filter('.post-content.text-left');
+          $desc = trim(preg_replace('/\t+/', '', str_replace('more..', '', $desc->text())));
+          $image = $node->filter('img.media-object');
+          $image = str_replace(" ", "_", $image->attr('src'));
+          $date = urlencode(html_entity_decode(htmlentities($date->html())));
+          $date = urldecode(str_replace("%C2%A0", "", $date));//.'<br>';
+          $date_given = DateTime::createFromFormat('M d, Y', $date);
+          if ($date_given) {
+            $date_given->setTime(0, 0, 0);
+            $id_web = explode('/', $link);
+            $id_web = $id_web[count($id_web) - 1];
+            foreach ($last as $id_last) {
+              if ($id_web === $id_last) {
+                $exist = TRUE;
+                break;
+              }
+            }
+            if ( ! $exist) {
+              $news_list[] = $this->news_model->build_news(
+                $id_web,
+                $title->text(),
+                $desc,
+                $link,
+                $image,
+                $date_given->format("Y-m-d H:i:s"));
             }
           }
-          $date_given = DateTime::createFromFormat('M d, Y - H:i', $value->tgl . ' - ' . $value->jam);
-          if ($date_given) {
-            $date = $date_given->format("Y-m-d H:i:s");
-            $news_list[] = $this->news_model->build_news(
-              $value->id,
-              $value->judul,
-              $value->isi,
-              $value->url_web,
-              $value->img,
-              $date);
-          }
         }
-        // Insert data if not empty
-        if ( ! empty($news_list)) $result_insert_news = $this->news_model->insert_batch($news_list);
-
-        // If something wrong when inserting data, reset the return data to empty
-        if (empty($result_insert_news)) $news_list = [];
-      }
-    }
-
-    return $result_insert_news;
+      });
+    if(!empty($news_list)) $this->news_model->insert_batch($news_list);
   }
 
   /**

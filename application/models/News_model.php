@@ -51,21 +51,30 @@ class News_model extends FNR_Model
   /**
    * Function to get last id from the web
    *
-   * @return string Last id from the web
+   * @return array List last id from the web
    */
   public function get_last_id_web()
-  : string
+  : array
   {
     $this->log->write_log('debug', $this->TAG . ': get_last_id_web: ');
-    $this->db->select('id_web');
+    $this->db->select('date');
     $this->db->from('news');
     $this->db->limit(1);
     $this->db->order_by('date', 'DESC');
-    $result = $this->db->get()->result();
+    $result_check_date = $this->db->get()->result();
 
-    $return = '';
-    if ( ! empty($result)) {
-      $return = $result[0]->id_web;
+    $return = [];
+    if ( ! empty($result_check_date)) {
+      $this->db->select('id_web');
+      $this->db->from('news');
+      $this->db->where('date', $result_check_date[0]->date);
+      $this->db->order_by('date', 'DESC');
+      $result = $this->db->get()->result();
+      if ( ! empty($result)) {
+        foreach ($result as $item) {
+          $return[] = $item->id_web;
+        }
+      }
     }
 
     return $return;
