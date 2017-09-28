@@ -17,7 +17,7 @@
  */
 
 defined('BASEPATH') OR exit('No direct script access allowed');
-ini_set('max_execution_time', 500);
+ini_set('max_execution_time', 1000);
 
 class Crawler extends FNR_Controller
 {
