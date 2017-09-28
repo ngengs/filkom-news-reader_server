@@ -45,7 +45,6 @@ class News extends FNR_Controller
     if ( ! is_numeric($page)) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter.', 404);
     } else {
-      $this->log->write_log('debug', $this->TAG . ': list_get: page:' . $page);
       $result = $this->news_model->get($page);
       $this->response($result);
     }
