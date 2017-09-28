@@ -258,7 +258,7 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
           "This API will give list of Announcement with latest news first and with param 
 <code class='highlight'><span class='s'>{page}</span></code> for pagination the news list";
         $api_target = "announcement/list/{page}";
-        $api_try = base_url('api/announcement/news/list/1');
+        $api_try = base_url('api/announcement/list/1');
         $api_method = 'GET';
         $list = [];
         for ($i = 0; $i < 2; $i++) {
