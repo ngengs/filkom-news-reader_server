@@ -22,11 +22,21 @@ class Announcements_model extends FNR_Model
 {
   private $TAG = "Announcements_model";
 
+  /**
+   * Announcements_model constructor.
+   */
   public function __construct()
   {
     parent::__construct();
   }
 
+  /**
+   * Function to insert the batch data. Use build_details() for data format.
+   *
+   * @param array $data Build data to insert
+   *
+   * @return int|null Status query insert
+   */
   public function insert_batch(array $data)
   {
     $this->log->write_log('debug', $this->TAG . ': insert_batch: ' . json_encode($data));
@@ -38,6 +48,16 @@ class Announcements_model extends FNR_Model
     return $result;
   }
 
+  /**
+   * Function to build announcement data for the batch insert.
+   *
+   * @param string $id_web Announcement Id from the web
+   * @param string $title  Announcement Title
+   * @param string $link   Announcement Link
+   * @param string $date   Announcement Date
+   *
+   * @return array
+   */
   public function build_announcement(string $id_web, string $title, string $link, string $date)
   : array
   {
@@ -56,6 +76,11 @@ class Announcements_model extends FNR_Model
     ];
   }
 
+  /**
+   * Function to get last id from the web
+   *
+   * @return array List of last string id_web in same date
+   */
   public function get_last_id_web()
   : array
   {
@@ -74,10 +99,10 @@ class Announcements_model extends FNR_Model
       $this->db->where('date', $result_check_date[0]->date);
       $this->db->order_by('date', 'DESC');
       $result = $this->db->get()->result();
-      if(!empty($result)){
-       foreach ($result as $item){
-         $return[] = $item->id_web;
-       }
+      if ( ! empty($result)) {
+        foreach ($result as $item) {
+          $return[] = $item->id_web;
+        }
       }
     }
 
