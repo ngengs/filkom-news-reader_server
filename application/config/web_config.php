@@ -24,3 +24,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 $config['crawler_token'] = NULL;
 $config['crawler_target'] = 'http://filkom.ub.ac.id/page/news_json';
+$config['crawler_target_announcement'] = 'http://filkom.ub.ac.id/page/read/pengumuman/';

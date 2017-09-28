@@ -49,6 +49,7 @@ class Crawler extends FNR_Controller
   {
     $this->crawl_news_list();
     $this->crawl_news_detail();
+    $this->crawl_announcement();
   }
 
   /**
@@ -158,6 +159,52 @@ class Crawler extends FNR_Controller
       // Insert the search data
       $this->search_model->insert_batch($search_data);
     }
+  }
+
+  private function crawl_announcement()
+  {
+    $client = new GuzzleHttp\Client();
+    $announcement = [];
+    $exist = FALSE;
+    $result = $client->get(
+      $this->config->item('crawler_target_announcement'),
+      [
+        'headers' => ['Cookie' => ' lang-switch=in']
+      ]);
+    $this->load->model('announcements_model');
+    $last = $this->announcements_model->get_last_id_web();
+    $crawler = new \Symfony\Component\DomCrawler\Crawler(
+      (string)$result->getBody(),
+      $this->config->item('crawler_target_announcement'));
+    $body = $crawler->filter('section[itemprop="articleBody"] .table.web-page-filkom tbody');
+    $body->children()->each(
+      function (\Symfony\Component\DomCrawler\Crawler $node, $i) use (&$announcement, &$exist, &$last) {
+        if ( ! $exist) {
+          $title = $node->filter('.title-article');
+          $date = $node->filter('.time-post');
+          $link = $title->attr('href');
+          $date_given = DateTime::createFromFormat('d M Y', $date->text());
+          if ($date_given) {
+            $date_given->setTime(0, 0, 0);
+            $id_web = explode('/', $link);
+            $id_web = $id_web[count($id_web) - 1];
+            foreach ($last as $id_last) {
+              if ($id_web === $id_last) {
+                $exist = TRUE;
+                break;
+              }
+            }
+            if ( ! $exist) {
+              $announcement[] = $this->announcements_model->build_announcement(
+                $id_web,
+                $title->text(),
+                $link,
+                $date_given->format("Y-m-d H:i:s"));
+            }
+          }
+        }
+      });
+    $this->announcements_model->insert_batch($announcement);
   }
 
 }
