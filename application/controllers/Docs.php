@@ -256,7 +256,7 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
         $api_title = 'Announcement List';
         $api_description =
           "This API will give list of Announcement with latest news first and with param 
-<code class='highlight'><span class='s'>{page}</span></code> for pagination the news list";
+<code class='highlight'><span class='s'>{page}</span></code> for pagination the announcement list";
         $api_target = "announcement/list/{page}";
         $api_try = base_url('api/announcement/list/1');
         $api_method = 'GET';
@@ -279,7 +279,7 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
         $selected = 25;
         $api_title = 'Announcement Search';
         $api_description =
-          "This API will give list of Search Announcement with latest news first and with param 
+          "This API will give list of Search Announcement with latest announcement first and with param 
 <code class='highlight'><span class='s'>{text}</span></code> for searched text and 
 <code class='highlight'><span class='s'>{page}</span></code> for pagination purpose";
         $api_target = "announcement/search?q={text}&page={page}";
