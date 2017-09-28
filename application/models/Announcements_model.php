@@ -90,13 +90,13 @@ class Announcements_model extends FNR_Model
     $this->db->from('announcements');
     $this->db->limit(1);
     $this->db->order_by('date', 'DESC');
-    $result_check_date = $this->db->get()->result();
+    $result_check_date = $this->db->get()->unbuffered_row();
 
     $return = [];
     if ( ! empty($result_check_date)) {
       $this->db->select('id_web');
       $this->db->from('announcements');
-      $this->db->where('date', $result_check_date[0]->date);
+      $this->db->where('date', $result_check_date->date);
       $this->db->order_by('date', 'DESC');
       $result = $this->db->get()->result();
       if ( ! empty($result)) {
@@ -130,9 +130,9 @@ class Announcements_model extends FNR_Model
       if ( ! empty($query)) {
         $this->db->like('LOWER(title)', strtolower($query));
       }
-      $result_count = $this->db->get()->result();
+      $result_count = $this->db->get()->unbuffered_row();
       if ( ! empty($result_count)) {
-        $count = $result_count[0]->count;
+        $count = $result_count->count;
         $total_page = intdiv($count, $per_page);
       }
     }

@@ -86,9 +86,9 @@ class Search_model extends FNR_Model
     $this->db->from('search');
     $this->db->like('LOWER(search.data)', strtolower($query));
     $this->db->or_like('LOWER(search.title)', strtolower($query));
-    $result_count = $this->db->get()->result();
+    $result_count = $this->db->get()->unbuffered_row();
     if ( ! empty($result_count)) {
-      $count = $result_count[0]->count;
+      $count = $result_count->count;
       $total_page = intdiv($count, $per_page);
     }
     $this->news_list_builder($page, $per_page);
