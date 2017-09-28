@@ -42,7 +42,25 @@ class Announcements_model extends FNR_Model
     $this->log->write_log('debug', $this->TAG . ': insert_batch: ' . json_encode($data));
     $result = NULL;
     if ( ! empty($data)) {
-      $result = $this->db->insert_batch('announcements', $data, FALSE);
+      // Check id_web before insert
+      $announcement_id_web = [];
+      foreach ($data as $item) {
+        $announcement_id_web[] = $item['id_web'];
+      }
+      $this->db->select('id_web');
+      $this->db->where_in('id_web', $announcement_id_web, FALSE);
+      $this->db->from('announcements');
+      $result_check = $this->db->get()->result();
+      foreach ($result_check as $check_item){
+        foreach ($data as $key => $item){
+          // Remove data if id_web exist
+          if($item['id_web'] === $this->db->escape($check_item->id_web)) {
+            unset($data[$key]);
+          }
+        }
+      }
+      // Only insert data if data not empty after clean up
+      if (count($data) > 0) $result = $this->db->insert_batch('announcements', $data, FALSE);
     }
 
     return $result;
