@@ -158,7 +158,7 @@ class Docs extends CI_Controller
 <br>Type: <b>2</b> for blockquote.
 <br>Type: <b>3</b> for images.";
         $api_target = "news/id/{id}";
-        $api_try = base_url('api/news/id/566970E9A33811E7B3CF6C92BF0C2105');
+        $api_try = base_url('api/news/id/CBF43261A4A911E79F376C92BF0C2105');
         $api_method = 'GET';
         $list = [];
         $list[] = [
