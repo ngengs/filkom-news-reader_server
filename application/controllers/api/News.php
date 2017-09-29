@@ -34,15 +34,15 @@ class News extends FNR_Controller
 
   /**
    * API Get list of news
-   * Path = news/list/{$page}
+   * Path = news/list/
    * Method = GET
-   *
-   * @param int $page Page Now
+   * Param = page
    */
-  public function list_get($page = 1)
+  public function list_get()
   {
+    $page = $this->input->get('page') ?? 1;
     $this->log->write_log('debug', $this->TAG . ': list: $page: ' . $page);
-    if ( ! is_numeric($page)) {
+    if ( ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter.', 404);
     } else {
       $result = $this->news_model->get($page);
@@ -92,7 +92,7 @@ class News extends FNR_Controller
   {
     $this->log->write_log('debug', $this->TAG . ': key_get: $key: ' . $key);
     if (empty($key)) $this->response_404();
-    $news = $this->news_model->get(1, 1, null, $key);
+    $news = $this->news_model->get(1, 1, NULL, $key);
     if (empty($news)) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'News Key not found', 404);
     } else {
@@ -124,7 +124,7 @@ class News extends FNR_Controller
     $page = $this->input->get('page') ?? 1;
     $query = $this->input->get('q');
     $this->log->write_log('debug', $this->TAG . ': list: $query: ' . $query . ',$page: ' . $page);
-    if (empty($query) OR ! is_numeric($page)) {
+    if (empty($query) OR ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter', 404);
     } else {
       $this->load->model('search_model');
