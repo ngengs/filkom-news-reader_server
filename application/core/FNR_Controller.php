@@ -21,9 +21,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Class FNR_Controller
  *
- * @property News_model    $news_model
- * @property Details_model $details_model
- * @property Search_model  $search_model
+ * @property News_model          $news_model
+ * @property Details_model       $details_model
+ * @property Search_model        $search_model
+ * @property Announcements_model $announcements_model
  */
 class FNR_Controller extends CI_Controller
 {

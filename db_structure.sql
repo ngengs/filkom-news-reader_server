@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 27, 2017 at 10:55 PM
+-- Generation Time: Sep 28, 2017 at 09:01 AM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
@@ -21,6 +21,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_filkom_news_reader`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `announcements`
+--
+
+CREATE TABLE `announcements` (
+  `id` binary(16) NOT NULL,
+  `id_web` varchar(7) NOT NULL,
+  `title` text NOT NULL,
+  `link` text NOT NULL,
+  `date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -68,6 +82,13 @@ CREATE TABLE `search` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_web` (`id_web`);
 
 --
 -- Indexes for table `details`

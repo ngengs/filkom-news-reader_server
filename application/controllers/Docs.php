@@ -58,22 +58,32 @@ class Docs extends CI_Controller
             'title' => 'News Search',
             'link' => base_url('docs/api/news_search')
           ],
+          [
+            'id' => 24,
+            'title' => 'Announcement List',
+            'link' => base_url('docs/api/announcement_list')
+          ],
+          [
+            'id' => 25,
+            'title' => 'Announcement Search',
+            'link' => base_url('docs/api/announcement_search')
+          ],
         ]
       ],
       [
-        'id'=>3,
-        'title'=>'Source',
-        'link'=>null,
-        'child'=>[
+        'id' => 3,
+        'title' => 'Source',
+        'link' => NULL,
+        'child' => [
           [
-            'id'=>30,
-            'title'=>'Web Server',
-            'link'=>'https://github.com/ngengs/filkom-news-reader_server'
+            'id' => 30,
+            'title' => 'Web Server',
+            'link' => 'https://github.com/ngengs/filkom-news-reader_server'
           ],
           [
-            'id'=>30,
-            'title'=>'Android App',
-            'link'=>'https://github.com/ngengs/filkom-news-reader_android'
+            'id' => 30,
+            'title' => 'Android App',
+            'link' => 'https://github.com/ngengs/filkom-news-reader_android'
           ]
         ]
       ]
@@ -118,8 +128,8 @@ class Docs extends CI_Controller
         $api_description =
           "This API will give list of News with latest news first and with param 
 <code class='highlight'><span class='s'>{page}</span></code> for pagination the news list";
-        $api_target = "news/list/{page}";
-        $api_try = base_url('api/news/list/1');
+        $api_target = "news/list?page={page}";
+        $api_try = base_url('api/news/list?page=1');
         $api_method = 'GET';
         $list = [];
         for ($i = 0; $i < 2; $i++) {
@@ -148,7 +158,7 @@ class Docs extends CI_Controller
 <br>Type: <b>2</b> for blockquote.
 <br>Type: <b>3</b> for images.";
         $api_target = "news/id/{id}";
-        $api_try = base_url('api/news/id/566970E9A33811E7B3CF6C92BF0C2105');
+        $api_try = base_url('api/news/id/CBF43261A4A911E79F376C92BF0C2105');
         $api_method = 'GET';
         $list = [];
         $list[] = [
@@ -241,6 +251,56 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
           "news" => $list
         ];
         break;
+      case 'announcement_list':
+        $selected = 24;
+        $api_title = 'Announcement List';
+        $api_description =
+          "This API will give list of Announcement with latest news first and with param 
+<code class='highlight'><span class='s'>{page}</span></code> for pagination the announcement list";
+        $api_target = "announcement/list?page={page}";
+        $api_try = base_url('api/announcement/list?page=1');
+        $api_method = 'GET';
+        $list = [];
+        for ($i = 0; $i < 2; $i++) {
+          $list[] = [
+            "id" => "ANNOUNCEMENT-ID-{$i}",
+            "title" => "Announcement Title {$i}",
+            "link" => "http://example.com/news/original-link-{$i}",
+            "date" => "31/01/2011 23:23:59"
+          ];
+        }
+        $api_response["data"] = [
+          "total_page" => 4,
+          "page_now" => 1,
+          "announcement" => $list
+        ];
+        break;
+      case 'announcement_search':
+        $selected = 25;
+        $api_title = 'Announcement Search';
+        $api_description =
+          "This API will give list of Search Announcement with latest announcement first and with param 
+<code class='highlight'><span class='s'>{text}</span></code> for searched text and 
+<code class='highlight'><span class='s'>{page}</span></code> for pagination purpose";
+        $api_target = "announcement/search?q={text}&page={page}";
+        $api_try = base_url('api/announcement/search?q=jadwal&page=1');
+        $api_method = 'GET';
+        $list = [];
+        for ($i = 0; $i < 2; $i++) {
+          $list[] = [
+            "id" => "ANNOUNCEMENT-ID-{$i}",
+            "title" => "Announcement Title {$i}",
+            "link" => "http://example.com/news/original-link-{$i}",
+            "date" => "31/01/2011 23:23:59"
+          ];
+        }
+        $api_response["data"] = [
+          "total_page" => 4,
+          "page_now" => 1,
+          "announcement" => $list
+        ];
+        break;
+
     }
     if ($selected === -1) {
       show_404();
