@@ -35,12 +35,13 @@ class Announcements_model extends FNR_Model
    *
    * @param array $data Build data to insert
    *
-   * @return int|null Status query insert
+   * @return int|array Inserted id_web
    */
   public function insert_batch(array $data)
+  :?array
   {
     $this->log->write_log('debug', $this->TAG . ': insert_batch: ' . json_encode($data));
-    $result = NULL;
+    $result = [];
     if ( ! empty($data)) {
       // Check id_web before insert
       $announcement_id_web = [];
@@ -51,16 +52,22 @@ class Announcements_model extends FNR_Model
       $this->db->where_in('id_web', $announcement_id_web, FALSE);
       $this->db->from('announcements');
       $result_check = $this->db->get()->result();
-      foreach ($result_check as $check_item){
-        foreach ($data as $key => $item){
+      foreach ($result_check as $check_item) {
+        foreach ($data as $key => $item) {
           // Remove data if id_web exist
-          if($item['id_web'] === $this->db->escape($check_item->id_web)) {
+          if ($item['id_web'] === $this->db->escape($check_item->id_web)) {
             unset($data[$key]);
           }
         }
       }
       // Only insert data if data not empty after clean up
-      if (count($data) > 0) $result = $this->db->insert_batch('announcements', $data, FALSE);
+      if (count($data) > 0) {
+        $this->db->insert_batch('announcements', $data, FALSE);
+
+        foreach ($data as $key => $item) {
+          $result[] = $item['id_web'];
+        }
+      }
     }
 
     return $result;
@@ -181,6 +188,25 @@ class Announcements_model extends FNR_Model
       'page_now' => $page,
       'announcement' => $announcement
     ];
+  }
+
+
+  public function get_id_web(?array $id_web)
+  {
+    $result = [];
+    if(!empty($id_web)){
+      $this->db->select("title");
+      $this->db->from("announcements");
+      $this->db->where_in("id_web", $id_web, FALSE);
+      $query = $this->db->get()->result();
+      if(!empty($query)){
+        foreach ($query as $key => $value){
+          $result[] = $value->title;
+        }
+      }
+    }
+
+    return $result;
   }
 
 }

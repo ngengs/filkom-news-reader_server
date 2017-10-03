@@ -21,7 +21,7 @@ ini_set('max_execution_time', 1000);
 
 class Crawler extends FNR_Controller
 {
-  private $TAG = "Crawler";
+  private $TAG = 'Crawler';
 
   /**
    * Crawler constructor.
@@ -37,6 +37,7 @@ class Crawler extends FNR_Controller
     $this->load->model('news_model');
     $this->load->model('details_model');
     $this->load->model('search_model');
+    $this->load->model('announcements_model');
   }
 
   /**
@@ -47,15 +48,19 @@ class Crawler extends FNR_Controller
    */
   public function go_post()
   {
-    $this->crawl_news_list();
+    $news = $this->crawl_news_list();
     $this->crawl_news_detail();
-    $this->crawl_announcement();
+    $announcement = $this->crawl_announcement();
+    $this->build_notification($news, $announcement);
   }
 
   /**
-   * Crawl list of news
+   * Crawl News
+   *
+   * @return array|null Array of inserted id_web
    */
   private function crawl_news_list()
+  :?array
   {
     $news_list = [];
     // Get data from server
@@ -80,9 +85,9 @@ class Crawler extends FNR_Controller
           $desc = $node->filter('.post-content.text-left');
           $desc = trim(preg_replace('/\t+/', '', str_replace('more..', '', $desc->text())));
           $image = $node->filter('img.media-object');
-          $image = str_replace(" ", "_", $image->attr('src'));
+          $image = str_replace(' ', '_', $image->attr('src'));
           $date = urlencode(html_entity_decode(htmlentities($date->html())));
-          $date = urldecode(str_replace("%C2%A0", "", $date));//.'<br>';
+          $date = urldecode(str_replace('%C2%A0', '', $date));//.'<br>';
           $date_given = DateTime::createFromFormat('M d, Y', $date);
           if ($date_given) {
             $date_given->setTime(0, 0, 0);
@@ -101,12 +106,15 @@ class Crawler extends FNR_Controller
                 $desc,
                 $link,
                 $image,
-                $date_given->format("Y-m-d H:i:s"));
+                $date_given->format('Y-m-d H:i:s'));
             }
           }
         }
       });
-    if(!empty($news_list)) $this->news_model->insert_batch($news_list);
+    $result_insert = [];
+    if ( ! empty($news_list)) $result_insert = $this->news_model->insert_batch($news_list);
+
+    return $result_insert;
   }
 
   /**
@@ -141,20 +149,20 @@ class Crawler extends FNR_Controller
                 // Extract image from data
                 try {
                   $image_node = $node->filter('a.fancybox img');
-                  $src = $image_node->attr("src");
+                  $src = $image_node->attr('src');
                   $parsed_data[] = $this->details_model->build_details($id, 3, $src, $position);
                   $position++;
                   $image_parent_node = $image_node->parents()->getNode(0);
                   $removed_string = $image_parent_node->ownerDocument->saveHTML($image_parent_node);
-                  $data = str_replace($removed_string, "", $data);
+                  $data = str_replace($removed_string, '', $data);
                 } catch (Exception $exception) {
                   $this->log->write_log(
                     'info',
                     $this->TAG . ': crawl_news_detail: image not detected at node: ' . $i);
                 }
 
-                $type = ($node->nodeName() == "blockquote") ? 2 : 0;
-                $type = ($node->nodeName() == "p") ? 1 : $type;
+                $type = ($node->nodeName() == 'blockquote') ? 2 : 0;
+                $type = ($node->nodeName() == 'p') ? 1 : $type;
                 $parsed_data[] = $this->details_model->build_details($id, $type, $data, $position);
                 $position++;
               }
@@ -170,7 +178,13 @@ class Crawler extends FNR_Controller
     }
   }
 
+  /**
+   * Crawl announcement
+   *
+   * @return array|null Array of inserted id_web
+   */
   private function crawl_announcement()
+  :?array
   {
     $client = new GuzzleHttp\Client();
     $announcement = [];
@@ -180,7 +194,6 @@ class Crawler extends FNR_Controller
       [
         'headers' => ['Cookie' => ' lang-switch=in']
       ]);
-    $this->load->model('announcements_model');
     $last = $this->announcements_model->get_last_id_web();
     $crawler = new \Symfony\Component\DomCrawler\Crawler(
       (string)$result->getBody(),
@@ -208,12 +221,77 @@ class Crawler extends FNR_Controller
                 $id_web,
                 $title->text(),
                 $link,
-                $date_given->format("Y-m-d H:i:s"));
+                $date_given->format('Y-m-d H:i:s'));
             }
           }
         }
       });
-    $this->announcements_model->insert_batch($announcement);
+    $result_print = [];
+    if ( ! empty($announcement)) $result_print = $this->announcements_model->insert_batch($announcement);
+
+    return $result_print;
+  }
+
+  private function build_notification(?array $id_web_news, ?array $id_web_announcement)
+  {
+    $this->log->write_log(
+      'debug',
+      $this->TAG . ': news: ' . json_encode($id_web_news) . ', announcement: ' .
+      json_encode($id_web_announcement));
+    $fcm_key = $this->config->item('fcm_server_key');
+    if ( ! empty($fcm_key)) {
+      $send_news = [];
+      $send_announcement = [];
+      if ( ! empty($id_web_news)) {
+        $data_news = $this->news_model->get_id_web($id_web_news);
+        if ( ! empty($data_news)) {
+          $send_news['type'] = 10;
+          $send_news['total'] = count($data_news);
+          for ($i = 0; $i < count($data_news) && $i < 5; $i++) {
+            $send_news['title_' . $i] = $data_news[$i];
+          }
+        }
+      }
+      if ( ! empty($id_web_announcement)) {
+        $data_announcement = $this->announcements_model->get_id_web($id_web_announcement);
+        if ( ! empty($data_announcement)) {
+          $send_announcement['type'] = 11;
+          $send_announcement['total'] = count($data_announcement);
+          for ($i = 0; $i < count($data_announcement) && $i < 5; $i++) {
+            $send_announcement['title_' . $i] = $data_announcement[$i];
+          }
+        }
+      }
+      if (is_array($fcm_key)) {
+        foreach ($fcm_key as $key) {
+          $this->send_notification($key, 'subscribe_news', $send_news);
+          $this->send_notification($key, 'subscribe_announcement', $send_announcement);
+        }
+      } else {
+        $this->send_notification($fcm_key, 'subscribe_news', $send_news);
+        $this->send_notification($fcm_key, 'subscribe_announcement', $send_announcement);
+      }
+    }
+  }
+
+  private function send_notification(string $fcm_key, string $topic, ?array $payload)
+  {
+    $fcm = new GuzzleHttp\Client();
+    if ( ! empty($payload)) {
+      $fcm->request(
+        'POST',
+        'https://fcm.googleapis.com/fcm/send',
+        [
+          'json' => [
+            'to' => '/topics/' . $topic,
+            'data' => $payload
+          ],
+          'headers' => [
+            'Authorization' => 'key=' . $fcm_key
+          ]
+        ]
+      );
+    }
   }
 
 }

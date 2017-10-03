@@ -25,3 +25,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['crawler_token'] = NULL;
 $config['crawler_target'] = 'http://filkom.ub.ac.id/page/read/news/';
 $config['crawler_target_announcement'] = 'http://filkom.ub.ac.id/page/read/pengumuman/';
+
+/*
+ * Push Notification Configuration
+ */
+$config['fcm_server_key'] = array();
