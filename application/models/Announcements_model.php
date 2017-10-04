@@ -158,7 +158,7 @@ class Announcements_model extends FNR_Model
       $result_count = $this->db->get()->unbuffered_row();
       if ( ! empty($result_count)) {
         $count = $result_count->count;
-        $total_page = intdiv($count, $per_page);
+        $total_page = ceil($count / $per_page);
       }
     }
 
@@ -194,13 +194,13 @@ class Announcements_model extends FNR_Model
   public function get_id_web(?array $id_web)
   {
     $result = [];
-    if(!empty($id_web)){
+    if ( ! empty($id_web)) {
       $this->db->select("title");
       $this->db->from("announcements");
       $this->db->where_in("id_web", $id_web, FALSE);
       $query = $this->db->get()->result();
-      if(!empty($query)){
-        foreach ($query as $key => $value){
+      if ( ! empty($query)) {
+        foreach ($query as $key => $value) {
           $result[] = $value->title;
         }
       }
