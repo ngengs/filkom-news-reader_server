@@ -235,7 +235,7 @@ class News_model extends FNR_Model
       $this->db->where_in("id_web", $id_web, FALSE);
       $query = $this->db->get()->result();
       if ( ! empty($query)) {
-        foreach ($query as $key => $value) {
+        foreach ($query as $value) {
           $result[] = $value->title;
         }
       }
