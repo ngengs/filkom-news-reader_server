@@ -43,10 +43,9 @@ class Announcement extends FNR_Controller
     $this->log->write_log('debug', $this->TAG . ': list: $page: ' . $page);
     if ( ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter.', 404);
-    } else {
-      $result = $this->announcements_model->get($page);
-      $this->response($result);
     }
+    $result = $this->announcements_model->get($page);
+    $this->response($result);
   }
 
   /**
@@ -63,11 +62,10 @@ class Announcement extends FNR_Controller
     $this->log->write_log('debug', $this->TAG . ': list: $query: ' . $query . ',$page: ' . $page);
     if (empty($query) OR ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter', 404);
-    } else {
-      $query = html_escape($query);
-      $result = $this->announcements_model->get($page, 10, $query);
-      $this->response($result);
     }
+    $query = html_escape($query);
+    $result = $this->announcements_model->get($page, 10, $query);
+    $this->response($result);
   }
 
 

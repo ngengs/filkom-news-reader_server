@@ -35,12 +35,13 @@ class News_model extends FNR_Model
    *
    * @param array $data Build data to insert
    *
-   * @return int|null Status query insert
+   * @return array|null Inserted id_web
    */
   public function insert_batch(array $data)
+  :?array
   {
     $this->log->write_log('debug', $this->TAG . ': insert_batch: ' . json_encode($data));
-    $result = NULL;
+    $result = [];
     if ( ! empty($data)) {
       // Check id_web before insert
       $news_id_web = [];
@@ -51,16 +52,21 @@ class News_model extends FNR_Model
       $this->db->where_in('id_web', $news_id_web, FALSE);
       $this->db->from('news');
       $result_check = $this->db->get()->result();
-      foreach ($result_check as $check_item){
-        foreach ($data as $key => $item){
+      foreach ($result_check as $check_item) {
+        foreach ($data as $key => $item) {
           // Remove data if id_web exist
-          if($item['id_web'] === $this->db->escape($check_item->id_web)) {
+          if ($item['id_web'] === $this->db->escape($check_item->id_web)) {
             unset($data[$key]);
           }
         }
       }
       // Only insert data if data not empty after clean up
-      if (count($data) > 0) $result = $this->db->insert_batch('news', $data, FALSE);
+      if (count($data) > 0) {
+        $this->db->insert_batch('news', $data, FALSE);
+        foreach ($data as $key => $item) {
+          $result[] = $item['id_web'];
+        }
+      }
     }
 
     return $result;
@@ -177,7 +183,7 @@ class News_model extends FNR_Model
       $result_count = $this->db->get()->unbuffered_row();
       if ( ! empty($result_count)) {
         $count = $result_count->count;
-        $total_page = intdiv($count, $per_page);
+        $total_page = ceil($count / $per_page);
       }
     }
     $this->news_list_builder($page, $per_page);
@@ -218,6 +224,24 @@ class News_model extends FNR_Model
     $result = $this->db->get()->result();
 
     return ! empty($result);
+  }
+
+  public function get_id_web(?array $id_web)
+  {
+    $result = [];
+    if ( ! empty($id_web)) {
+      $this->db->select("title");
+      $this->db->from("news");
+      $this->db->where_in("id_web", $id_web, FALSE);
+      $query = $this->db->get()->result();
+      if ( ! empty($query)) {
+        foreach ($query as $value) {
+          $result[] = $value->title;
+        }
+      }
+    }
+
+    return $result;
   }
 
 }

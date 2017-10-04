@@ -44,10 +44,9 @@ class News extends FNR_Controller
     $this->log->write_log('debug', $this->TAG . ': list: $page: ' . $page);
     if ( ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter.', 404);
-    } else {
-      $result = $this->news_model->get($page);
-      $this->response($result);
     }
+    $result = $this->news_model->get($page);
+    $this->response($result);
   }
 
   /**
@@ -64,21 +63,20 @@ class News extends FNR_Controller
     $news = $this->news_model->get(1, 1, $id);
     if (empty($news)) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'News ID not found', 404);
-    } else {
-      $this->load->model('details_model');
-      $content = $this->details_model->get($id);
-      // Build output
-      $news = $news[0];
-      $output = [
-        'id' => $news['id'],
-        'title' => $news['title'],
-        'image' => $news['image'],
-        'link' => $news['link'],
-        'date' => $news['date'],
-        'content' => $content
-      ];
-      $this->response($output);
     }
+    $this->load->model('details_model');
+    $content = $this->details_model->get($id);
+    // Build output
+    $news = $news[0];
+    $output = [
+      'id' => $news['id'],
+      'title' => $news['title'],
+      'image' => $news['image'],
+      'link' => $news['link'],
+      'date' => $news['date'],
+      'content' => $content
+    ];
+    $this->response($output);
   }
 
   /**
@@ -95,21 +93,20 @@ class News extends FNR_Controller
     $news = $this->news_model->get(1, 1, NULL, $key);
     if (empty($news)) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'News Key not found', 404);
-    } else {
-      $news = $news[0];
-      $this->load->model('details_model');
-      $content = $this->details_model->get($news['id']);
-      // Build output
-      $output = [
-        'id' => $news['id'],
-        'title' => $news['title'],
-        'image' => $news['image'],
-        'link' => $news['link'],
-        'date' => $news['date'],
-        'content' => $content
-      ];
-      $this->response($output);
     }
+    $news = $news[0];
+    $this->load->model('details_model');
+    $content = $this->details_model->get($news['id']);
+    // Build output
+    $output = [
+      'id' => $news['id'],
+      'title' => $news['title'],
+      'image' => $news['image'],
+      'link' => $news['link'],
+      'date' => $news['date'],
+      'content' => $content
+    ];
+    $this->response($output);
   }
 
   /**
@@ -126,11 +123,10 @@ class News extends FNR_Controller
     $this->log->write_log('debug', $this->TAG . ': list: $query: ' . $query . ',$page: ' . $page);
     if (empty($query) OR ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter', 404);
-    } else {
-      $this->load->model('search_model');
-      $query = html_escape($query);
-      $result = $this->search_model->get($query, $page);
-      $this->response($result);
     }
+    $this->load->model('search_model');
+    $query = html_escape($query);
+    $result = $this->search_model->get($query, $page);
+    $this->response($result);
   }
 }

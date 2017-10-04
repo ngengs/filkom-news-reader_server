@@ -105,10 +105,6 @@ class Docs extends CI_Controller
 
   public function api($type = NULL)
   {
-    if (empty($type)) {
-      show_404();
-      die;
-    }
     $selected = -1;
     $api_title = '';
     $api_description = '';
@@ -304,7 +300,7 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
     }
     if ($selected === -1) {
       show_404();
-      die;
+      exit(1);
     }
     $this->data['page_title'] = "API - {$api_title}";
     $this->data['api_title'] = $api_title;
