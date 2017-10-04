@@ -200,7 +200,7 @@ class Crawler extends FNR_Controller
       $this->config->item('crawler_target_announcement'));
     $body = $crawler->filter('section[itemprop="articleBody"] .table.web-page-filkom tbody');
     $body->children()->each(
-      function (\Symfony\Component\DomCrawler\Crawler $node, $i) use (&$announcement, &$exist, &$last) {
+      function (\Symfony\Component\DomCrawler\Crawler $node) use (&$announcement, &$exist, &$last) {
         if ( ! $exist) {
           $title = $node->filter('.title-article');
           $date = $node->filter('.time-post');
