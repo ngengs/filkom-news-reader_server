@@ -77,7 +77,7 @@ class Crawler extends FNR_Controller
       $this->config->item('crawler_target'));
     $body = $crawler->filter('section[itemprop="articleBody"] .table.web-page-filkom tbody');
     $body->children()->each(
-      function (\Symfony\Component\DomCrawler\Crawler $node, $i) use (&$news_list, &$exist, &$last) {
+      function (\Symfony\Component\DomCrawler\Crawler $node) use (&$news_list, &$exist, &$last) {
         if ( ! $exist) {
           $title = $node->filter('.title-article');
           $date = $node->filter('time');
@@ -126,7 +126,7 @@ class Crawler extends FNR_Controller
     if ( ! empty($news_list)) {
       $client = new GuzzleHttp\Client();
       $search_data = [];
-      foreach ($news_list as $key => $value) {
+      foreach ($news_list as $value) {
         if (key_exists('link', $value) && ! empty($value->link)) {
           // Crawl the data
           $result = $client->get($value->link);
@@ -143,8 +143,8 @@ class Crawler extends FNR_Controller
           $search_data[] = $this->search_model->build_search($id, $value->title, $body->text());
           // Split the data per type
           $body->children()->each(
-            function (\Symfony\Component\DomCrawler\Crawler $node, $i) use ($limit, $id, &$parsed_data, &$position) {
-              if ($i < ($limit - 1)) {
+            function (\Symfony\Component\DomCrawler\Crawler $node, $index) use ($limit, $id, &$parsed_data, &$position) {
+              if ($index < ($limit - 1)) {
                 $data = $node->html();
                 // Extract image from data
                 try {
@@ -158,7 +158,7 @@ class Crawler extends FNR_Controller
                 } catch (Exception $exception) {
                   $this->log->write_log(
                     'info',
-                    $this->TAG . ': crawl_news_detail: image not detected at node: ' . $i);
+                    $this->TAG . ': crawl_news_detail: image not detected at node: ' . $index);
                 }
 
                 $type = ($node->nodeName() == 'blockquote') ? 2 : 0;
