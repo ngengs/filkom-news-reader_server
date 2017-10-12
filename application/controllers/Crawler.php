@@ -248,8 +248,8 @@ class Crawler extends FNR_Controller
           $send_news['type'] = 10;
           $send_news['total'] = count($data_news);
           for ($i = 0; $i < count($data_news) && $i < 5; $i++) {
-            $send_news['id_' . $i] = $data_news[$i][0];
-            $send_news['title_' . $i] = $data_news[$i][1];
+            $send_news['id_' . $i] = utf8_encode($data_news[$i][0]);
+            $send_news['title_' . $i] = utf8_encode($data_news[$i][1]);
           }
         }
       }
@@ -259,7 +259,7 @@ class Crawler extends FNR_Controller
           $send_announcement['type'] = 11;
           $send_announcement['total'] = count($data_announcement);
           for ($i = 0; $i < count($data_announcement) && $i < 5; $i++) {
-            $send_announcement['title_' . $i] = $data_announcement[$i];
+            $send_announcement['title_' . $i] = utf8_encode($data_announcement[$i]);
           }
         }
       }
