@@ -83,7 +83,7 @@ class Docs extends CI_Controller
           [
             'id' => 30,
             'title' => 'Android App',
-            'link' => 'https://github.com/ngengs/filkom-news-reader_android'
+            'link' => 'https://github.com/ngengs/filkom-news-reader_application-android'
           ]
         ]
       ]
