@@ -230,13 +230,13 @@ class News_model extends FNR_Model
   {
     $result = [];
     if ( ! empty($id_web)) {
-      $this->db->select("title");
+      $this->db->select("id, title");
       $this->db->from("news");
       $this->db->where_in("id_web", $id_web, FALSE);
       $query = $this->db->get()->result();
       if ( ! empty($query)) {
         foreach ($query as $value) {
-          $result[] = $value->title;
+          $result[] = [$value->id, $value->title];
         }
       }
     }

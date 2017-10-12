@@ -248,7 +248,8 @@ class Crawler extends FNR_Controller
           $send_news['type'] = 10;
           $send_news['total'] = count($data_news);
           for ($i = 0; $i < count($data_news) && $i < 5; $i++) {
-            $send_news['title_' . $i] = $data_news[$i];
+            $send_news['id_' . $i] = $data_news[$i][0];
+            $send_news['title_' . $i] = $data_news[$i][1];
           }
         }
       }
