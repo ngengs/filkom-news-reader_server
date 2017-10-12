@@ -40,6 +40,16 @@ function generate_menu_item(string $title, string $type, bool $selected, ?string
   <?php if(!empty($api_response)){
     echo "<script src='https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js'></script>";
   }?>
+  <link rel="apple-touch-icon" sizes="180x180" href="<?php echo base_url('assets/apple-touch-icon.png');?>">
+  <link rel="icon" type="image/png" sizes="32x32" href="<?php echo base_url('assets/favicon-32x32.png');?>">
+  <link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url('assets/favicon-16x16.png');?>">
+  <link rel="manifest" href="<?php echo base_url('assets/manifest.json');?>">
+  <link rel="mask-icon" href="<?php echo base_url('assets/safari-pinned-tab.svg');?>" color="#2196f3">
+  <link rel="shortcut icon" href="<?php echo base_url('assets/favicon.ico');?>">
+  <meta name="msapplication-config" content="<?php echo base_url('assets/browserconfig.xml');?>">
+  <meta name="apple-mobile-web-app-title" content="<?php echo $site_name; ?> Server">
+  <meta name="application-name" content="<?php echo $site_name; ?> Server">
+  <meta name="theme-color" content="#2196f3">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Roboto:300,400,500,700">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-pink.min.css"/>
   <style>
