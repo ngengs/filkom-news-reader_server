@@ -31,7 +31,7 @@ See Online [Here](http://filkom-news-reader.ngengs.com/)
   ```
   $route['default_controller'] = 'Docs';
   ```
-- Add some constant in `application/confog/constants.php`
+- Add some constant in `application/config/constants.php`
   ```
   /*
    * JSON Object Key
