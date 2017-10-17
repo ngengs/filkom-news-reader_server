@@ -230,7 +230,7 @@ class News_model extends FNR_Model
   {
     $result = [];
     if ( ! empty($id_web)) {
-      $this->db->select("id, title");
+      $this->db->select("HEX(id) as id, title");
       $this->db->from("news");
       $this->db->where_in("id_web", $id_web, FALSE);
       $query = $this->db->get()->result();
