@@ -66,6 +66,7 @@ function generate_menu_item(string $title, string $type, bool $selected, ?string
       padding-left: 16px;
       padding-right: 16px;
       text-align: center;
+      line-height: 32px;
     }
 
     .content {
