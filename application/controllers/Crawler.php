@@ -52,6 +52,10 @@ class Crawler extends FNR_Controller
     $this->crawl_news_detail();
     $announcement = $this->crawl_announcement();
     $this->build_notification($news, $announcement);
+
+    // Shortening link
+    $this->shortening_link_news();
+    $this->shortening_link_announcement();
   }
 
   /**
@@ -293,6 +297,84 @@ class Crawler extends FNR_Controller
         ]
       );
     }
+  }
+
+  /**
+   * Shortening news link
+   */
+  private function shortening_link_news()
+  {
+    $google_short_key = $this->config->item('google_short_url_key');
+    if ( ! empty($google_short_key)) {
+      // Check not shortened link in news
+      $data = $this->news_model->get_not_shortened();
+      if ( ! empty($data)) {
+        $shortened = [];
+        foreach ($data as $item) {
+          $link_short = $this->google_shortening($item['link'], $google_short_key);
+          if ( ! empty($link_short)) {
+            $shortened[] = ['id_web' => $item['id_web'], 'link_short' => $link_short];
+          }
+        }
+        $this->news_model->update_short_link_batch($shortened);
+      }
+    }
+  }
+
+  /**
+   * Shortening announcement link
+   */
+  private function shortening_link_announcement()
+  {
+    $google_short_key = $this->config->item('google_short_url_key');
+    if ( ! empty($google_short_key)) {
+      // Check not shortened link in news
+      $data = $this->announcements_model->get_not_shortened();
+      if ( ! empty($data)) {
+        $shortened = [];
+        foreach ($data as $item) {
+          $link_short = $this->google_shortening($item['link'], $google_short_key);
+          if ( ! empty($link_short)) {
+            $shortened[] = ['id_web' => $item['id_web'], 'link_short' => $link_short];
+          }
+        }
+        $this->announcements_model->update_short_link_batch($shortened);
+      }
+    }
+  }
+
+  /**
+   * Use google service to shortening the url
+   *
+   * @param string $link Long link to shortened
+   * @param string $key  Google API Key
+   *
+   * @return null|string Short link
+   */
+  private function google_shortening(string $link, string $key)
+  :?string
+  {
+    $result = NULL;
+
+    $google_shortening = new GuzzleHttp\Client();
+    $response = $google_shortening->request(
+      'POST',
+      'https://www.googleapis.com/urlshortener/v1/url',
+      [
+        'json' => [
+          'longUrl' => $link
+        ],
+        'query' => ['key' => $key]
+      ]);
+    $response_body = $response->getBody();
+    if ( ! empty($response_body)) {
+      $json_response = json_decode($response_body);
+      if ( ! empty($json_response->id)) {
+        $result = $json_response->id;
+      }
+    }
+
+    return $result;
   }
 
 }

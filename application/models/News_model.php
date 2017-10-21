@@ -244,4 +244,46 @@ class News_model extends FNR_Model
     return $result;
   }
 
+
+  /**
+   * Get empty short link
+   *
+   * @return array News List [id_web,link]
+   */
+  public function get_not_shortened()
+  : array
+  {
+    $result = [];
+    $this->db->select('id_web, link');
+    $this->db->where('link_short', NULL);
+    $this->db->from('news');
+    $query = $this->db->get()->result();
+
+    if ( ! empty($query)) {
+      foreach ($query as $item) {
+        $result[] = ['id_web' => $item->id_web, 'link' => $item->link];
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Update short link
+   *
+   * @param array $data News list to update [id_web,link_short]
+   *
+   * @return int Affected row
+   */
+  public function update_short_link_batch(array $data)
+  : int
+  {
+    $affected_row = 0;
+    if ( ! empty($data)) {
+      $affected_row = $this->db->update_batch('news', $data, 'id_web');
+    }
+
+    return $affected_row;
+  }
+
 }
