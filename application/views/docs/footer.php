@@ -22,12 +22,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 </div>
 </div>
-</main>
 <footer class="mdl-mini-footer">
   <div class="mdl-mini-footer__right-section">
     <p>&copy; 2017 Rizky Kharisma (@ngengs)</p>
   </div>
 </footer>
+</main>
 </div>
 <!-- Global Site Tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94052906-3"></script>

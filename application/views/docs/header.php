@@ -418,6 +418,11 @@ function generate_menu_item(string $title, string $type, bool $selected, ?string
       color: #009999
     }
 
+    .page-content {
+      min-height: 500px;
+      min-height: calc(100vh - 64px);
+    }
+
   </style>
 </head>
 <body>
