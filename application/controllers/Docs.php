@@ -26,7 +26,7 @@ class Docs extends CI_Controller
   {
     parent::__construct();
     $this->load->helper('url');
-    $this->data['site_name'] = 'Filkom News Reader';
+    $this->data['site_name'] = 'Filkom Brawijaya News Reader';
     $this->data['menu'] = [
       [
         'id' => 1,
