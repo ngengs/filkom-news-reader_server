@@ -52,6 +52,17 @@ See Online [Here](http://filkom-news-reader.ngengs.com/)
   defined('VALUE_STATUS_MESSAGE_ERROR') OR define('VALUE_STATUS_MESSAGE_ERROR', 'Something wrong!');
   defined('VALUE_DATA_ERROR') OR define('VALUE_DATA_ERROR', null);
   ```
+- Add some code in project root `index.php`
+  ```
+  /**
+   * -------------------------------------------------------------------
+   * CUSTOM CONFIG
+   * -------------------------------------------------------------------
+   *
+   */
+  date_default_timezone_set('Asia/Jakarta'); // Your Timezone
+  define('ROOTPATH',basename(__DIR__));
+  ```
 - Import the `db_structure.sql` to your database
 - Change config for database in `application/config/database.php`
 - Install composer dependencies 
