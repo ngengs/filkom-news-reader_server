@@ -26,7 +26,7 @@ class Docs extends CI_Controller
   {
     parent::__construct();
     $this->load->helper('url');
-    $this->data['site_name'] = 'Filkom News Reader';
+    $this->data['site_name'] = 'Filkom Brawijaya News Reader';
     $this->data['menu'] = [
       [
         'id' => 1,
@@ -123,9 +123,10 @@ class Docs extends CI_Controller
         $api_title = 'News List';
         $api_description =
           "This API will give list of News with latest news first and with param 
-<code class='highlight'><span class='s'>{page}</span></code> for pagination the news list";
-        $api_target = "news/list?page={page}";
-        $api_try = base_url('api/news/list?page=1');
+<code class='highlight'><span class='s'>{page}</span></code> for pagination the news list and 
+<code class='highlight'><span class='s'>{link}</span></code> for full or short link (full, short) by default is short";
+        $api_target = "news/list?page={page}&link={link}";
+        $api_try = base_url('api/news/list?page=1&link=full');
         $api_method = 'GET';
         $list = [];
         for ($i = 0; $i < 2; $i++) {
@@ -152,9 +153,11 @@ class Docs extends CI_Controller
 <br>It will give list of content with specific type:
 <br>Type: <b>1</b> for default paragraph.
 <br>Type: <b>2</b> for blockquote.
-<br>Type: <b>3</b> for images.";
-        $api_target = "news/id/{id}";
-        $api_try = base_url('api/news/id/CBF43261A4A911E79F376C92BF0C2105');
+<br>Type: <b>3</b> for images.
+<br> and with param
+<code class='highlight'><span class='s'>{link}</span></code> for full or short link (full, short) by default is short";
+        $api_target = "news/id/{id}?link={link}";
+        $api_try = base_url('api/news/id/CBF43261A4A911E79F376C92BF0C2105?link=full');
         $api_method = 'GET';
         $list = [];
         $list[] = [
@@ -191,9 +194,11 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
 <br>It will give list of content with specific type:
 <br>Type: <b>1</b> for default paragraph.
 <br>Type: <b>2</b> for blockquote.
-<br>Type: <b>3</b> for images.";
+<br>Type: <b>3</b> for images.
+<br> and with param
+<code class='highlight'><span class='s'>{link}</span></code> for full or short link (full, short) by default is short";
         $api_target = "news/key/{key}";
-        $api_try = base_url('api/news/key/f14f1fe');
+        $api_try = base_url('api/news/key/f14f1fe?link=full');
         $api_method = 'GET';
         $list = [];
         $list[] = [
@@ -226,9 +231,10 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
         $api_description =
           "This API will give list of Search News with latest news first and with param 
 <code class='highlight'><span class='s'>{text}</span></code> for searched text and 
-<code class='highlight'><span class='s'>{page}</span></code> for pagination purpose";
-        $api_target = "news/search?q={text}&page={page}";
-        $api_try = base_url('api/news/search?q=kuliah&page=1');
+<code class='highlight'><span class='s'>{page}</span></code> for pagination purpose and
+<code class='highlight'><span class='s'>{link}</span></code> for full or short link (full, short) by default is short";
+        $api_target = "news/search?q={text}&page={page}&link{link}";
+        $api_try = base_url('api/news/search?q=kuliah&page=1&link=full');
         $api_method = 'GET';
         $list = [];
         for ($i = 0; $i < 2; $i++) {
@@ -252,9 +258,10 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
         $api_title = 'Announcement List';
         $api_description =
           "This API will give list of Announcement with latest news first and with param 
-<code class='highlight'><span class='s'>{page}</span></code> for pagination the announcement list";
-        $api_target = "announcement/list?page={page}";
-        $api_try = base_url('api/announcement/list?page=1');
+<code class='highlight'><span class='s'>{page}</span></code> for pagination the announcement list and 
+<code class='highlight'><span class='s'>{link}</span></code> for full or short link (full, short) by default is short";
+        $api_target = "announcement/list?page={page}&link={link}";
+        $api_try = base_url('api/announcement/list?page=1&link=full');
         $api_method = 'GET';
         $list = [];
         for ($i = 0; $i < 2; $i++) {
@@ -277,9 +284,10 @@ that last <code class='highlight'><span class='s'>f14f1fe</span></code> is the <
         $api_description =
           "This API will give list of Search Announcement with latest announcement first and with param 
 <code class='highlight'><span class='s'>{text}</span></code> for searched text and 
-<code class='highlight'><span class='s'>{page}</span></code> for pagination purpose";
-        $api_target = "announcement/search?q={text}&page={page}";
-        $api_try = base_url('api/announcement/search?q=jadwal&page=1');
+<code class='highlight'><span class='s'>{page}</span></code> for pagination purpose and 
+<code class='highlight'><span class='s'>{link}</span></code> for full or short link (full, short) by default is short";
+        $api_target = "announcement/search?q={text}&page={page}&link={link}";
+        $api_try = base_url('api/announcement/search?q=jadwal&page=1&link=full');
         $api_method = 'GET';
         $list = [];
         for ($i = 0; $i < 2; $i++) {

@@ -66,6 +66,7 @@ function generate_menu_item(string $title, string $type, bool $selected, ?string
       padding-left: 16px;
       padding-right: 16px;
       text-align: center;
+      line-height: 32px;
     }
 
     .content {
@@ -415,6 +416,11 @@ function generate_menu_item(string $title, string $type, bool $selected, ?string
     /* Name.Variable.Instance */
     .highlight .il {
       color: #009999
+    }
+
+    .page-content {
+      min-height: 500px;
+      min-height: calc(100vh - 64px);
     }
 
   </style>

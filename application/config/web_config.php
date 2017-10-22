@@ -29,4 +29,9 @@ $config['crawler_target_announcement'] = 'http://filkom.ub.ac.id/page/read/pengu
 /*
  * Push Notification Configuration
  */
-$config['fcm_server_key'] = array();
+$config['fcm_server_key'] = [];
+
+/*
+ * Google Short URL Configuration
+ */
+$config['google_short_url_key'] = NULL;

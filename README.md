@@ -1,4 +1,4 @@
-# Filkom News Reader Server
+# Filkom Brawijaya News Reader Server
 [![GitHub release](https://img.shields.io/github/release/ngengs/filkom-news-reader_server.svg)](https://github.com/ngengs/filkom-news-reader_server/releases/latest)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f7b0069007c4586826f5a8e49d2805b)](https://www.codacy.com/app/ngengs/filkom-news-reader_server?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ngengs/filkom-news-reader_server&amp;utm_campaign=Badge_Grade)
 
@@ -51,6 +51,17 @@ See Online [Here](http://filkom-news-reader.ngengs.com/)
   defined('VALUE_STATUS_CODE_ERROR') OR define('VALUE_STATUS_CODE_ERROR', 404);
   defined('VALUE_STATUS_MESSAGE_ERROR') OR define('VALUE_STATUS_MESSAGE_ERROR', 'Something wrong!');
   defined('VALUE_DATA_ERROR') OR define('VALUE_DATA_ERROR', null);
+  ```
+- Add some code in project root `index.php`
+  ```
+  /**
+   * -------------------------------------------------------------------
+   * CUSTOM CONFIG
+   * -------------------------------------------------------------------
+   *
+   */
+  date_default_timezone_set('Asia/Jakarta'); // Your Timezone
+  define('ROOTPATH',basename(__DIR__));
   ```
 - Import the `db_structure.sql` to your database
 - Change config for database in `application/config/database.php`

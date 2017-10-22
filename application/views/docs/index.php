@@ -20,22 +20,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 ?>
 
-</div>
-</div>
-<footer class="mdl-mini-footer">
-  <div class="mdl-mini-footer__right-section">
-    <p>&copy; 2017 Rizky Kharisma (@ngengs)</p>
-  </div>
-</footer>
-</main>
-</div>
-<!-- Global Site Tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-94052906-3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments)};
-  gtag('js', new Date());
-  gtag('config', 'UA-94052906-3');
-</script>
-</body>
-</html>
+<h3>Welcome to <?php echo $site_name; ?>!</h3>
+
+<p>This server will provide you API for read the Filkom News.</p>
+
+<p>Available API:</p>
+<ul>
+  <?php
+  foreach ($menu[1]['child'] as $item) {
+    echo "<li><a href='{$item['link']}'>{$item['title']}</a></li>";
+  }?>
+</ul>
