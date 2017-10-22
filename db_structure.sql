@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 28, 2017 at 09:01 AM
+-- Generation Time: Oct 21, 2017 at 11:55 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
@@ -33,6 +33,7 @@ CREATE TABLE `announcements` (
   `id_web` varchar(7) NOT NULL,
   `title` text NOT NULL,
   `link` text NOT NULL,
+  `link_short` text,
   `date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -63,6 +64,7 @@ CREATE TABLE `news` (
   `short_desc` text NOT NULL,
   `image` text,
   `link` text NOT NULL,
+  `link_short` text,
   `date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

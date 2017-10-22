@@ -43,29 +43,34 @@ class FNR_Model extends CI_Model
 
     $this->db->select(
       'HEX(news.id) as id, news.title as title, news.short_desc as short_desc,
-       news.image as image, news.link as link, news.date as date'
+       news.image as image, news.link as link, news.link_short as link_short, news.date as date'
     );
     $this->db->order_by('news.date', 'DESC');
     $this->db->limit($per_page, ($page - 1) * $per_page);
   }
 
   /**
-   * @param mixed $result Result data from the query
+   * @param mixed $result    Result data from the query
+   * @param bool  $full_link Is we need full link?
    *
    * @return array Generated output
    */
-  protected function generate_news_output($result = null)
+  protected function generate_news_output($result = NULL, bool $full_link = FALSE)
   : array
   {
     $news = [];
     if ( ! empty($result)) {
       foreach ($result as $item) {
+        $link = str_replace(' ', '%20', $item->link);
+        if ( ! empty($item->link_short) && ! $full_link) {
+          $link = $item->link_short;
+        }
         $news[] = [
           'id' => $item->id,
           'title' => $item->title,
           'short_desc' => $item->short_desc,
           'image' => str_replace(' ', '%20', $item->image),
-          'link' => str_replace(' ', '%20', $item->link),
+          'link' => $link,
           'date' => date("d/m/Y H:i:s", strtotime($item->date)),
         ];
       }

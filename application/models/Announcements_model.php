@@ -135,13 +135,14 @@ class Announcements_model extends FNR_Model
   }
 
   /**
-   * @param int         $page     Page now
-   * @param int|null    $per_page Announcement count per page
-   * @param null|string $query    Announcement query for search purpose
+   * @param bool        $full_link Is need full link?
+   * @param int         $page      Page now
+   * @param int|null    $per_page  Announcement count per page
+   * @param null|string $query     Announcement query for search purpose
    *
    * @return array Announcement List
    */
-  public function get(int $page = 1, ?int $per_page = 10, ?string $query = NULL)
+  public function get(bool $full_link, int $page = 1, ?int $per_page = 10, ?string $query = NULL)
   : array
   {
     $this->log->write_log(
@@ -162,7 +163,7 @@ class Announcements_model extends FNR_Model
       }
     }
 
-    $this->db->select('HEX(id) as id, title, link, date');
+    $this->db->select('HEX(id) as id, title, link, link_short, date');
     $this->db->order_by('date', 'DESC');
     $this->db->limit($per_page, ($page - 1) * $per_page);
     $this->db->from('announcements');
@@ -174,10 +175,14 @@ class Announcements_model extends FNR_Model
     $announcement = [];
     if ( ! empty($result_announcement)) {
       foreach ($result_announcement as $item) {
+        $link = str_replace(' ', '%20', $item->link);
+        if ( ! empty($item->link_short) && ! $full_link) {
+          $link = $item->link_short;
+        }
         $announcement[] = [
           'id' => $item->id,
           'title' => $item->title,
-          'link' => str_replace(' ', '%20', $item->link),
+          'link' => $link,
           'date' => date("d/m/Y H:i:s", strtotime($item->date)),
         ];
       }
@@ -207,6 +212,48 @@ class Announcements_model extends FNR_Model
     }
 
     return $result;
+  }
+
+
+  /**
+   * Get empty short link
+   *
+   * @return array Announcement List [id_web,link]
+   */
+  public function get_not_shortened()
+  : array
+  {
+    $result = [];
+    $this->db->select('id_web, link');
+    $this->db->where('link_short', NULL);
+    $this->db->from('announcements');
+    $query = $this->db->get()->result();
+
+    if ( ! empty($query)) {
+      foreach ($query as $item) {
+        $result[] = ['id_web' => $item->id_web, 'link' => $item->link];
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Update short link
+   *
+   * @param array $data Announcement list to update [id_web,link_short]
+   *
+   * @return int Affected row
+   */
+  public function update_short_link_batch(array $data)
+  : int
+  {
+    $affected_row = 0;
+    if ( ! empty($data)) {
+      $affected_row = $this->db->update_batch('announcements', $data, 'id_web');
+    }
+
+    return $affected_row;
   }
 
 }

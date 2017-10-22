@@ -157,19 +157,20 @@ class News_model extends FNR_Model
   /**
    * Function to get list of news per page
    *
-   * @param int         $page     Page now
-   * @param int|null    $per_page News count per page
-   * @param null|string $id       News id. If you define the News Id this will return single data, so will return
-   *                              without total_page and page_now and data is not inside `news` index
+   * @param bool        $full_link Is need full link?
+   * @param int         $page      Page now
+   * @param int|null    $per_page  News count per page
+   * @param null|string $id        News id. If you define the News Id this will return single data, so will return
+   *                               without total_page and page_now and data is not inside `news` index
    *
-   * @param null|string $key      News key or last path from the website
-   *                              (eg: http://filkom.ub.ac.id/page/read/news/title-link/{key}).
-   *                              If you define the News Id this will return single data, so will return without
-   *                              total_page and page_now and data is not inside `news` index
+   * @param null|string $key       News key or last path from the website
+   *                               (eg: http://filkom.ub.ac.id/page/read/news/title-link/{key}).
+   *                               If you define the News Id this will return single data, so will return without
+   *                               total_page and page_now and data is not inside `news` index
    *
    * @return array News List
    */
-  public function get(int $page = 1, ?int $per_page = 10, ?string $id = NULL, ?string $key = NULL)
+  public function get(bool $full_link, int $page = 1, ?int $per_page = 10, ?string $id = NULL, ?string $key = NULL)
   : array
   {
     $this->log->write_log(
@@ -195,7 +196,7 @@ class News_model extends FNR_Model
       $this->db->where('news.id_web', $key);
     }
     $result_news = $this->db->get()->result();
-    $news = $this->generate_news_output($result_news);
+    $news = $this->generate_news_output($result_news, $full_link);
 
     if (empty($id) && empty($key)) {
       return [
@@ -242,6 +243,48 @@ class News_model extends FNR_Model
     }
 
     return $result;
+  }
+
+
+  /**
+   * Get empty short link
+   *
+   * @return array News List [id_web,link]
+   */
+  public function get_not_shortened()
+  : array
+  {
+    $result = [];
+    $this->db->select('id_web, link');
+    $this->db->where('link_short', NULL);
+    $this->db->from('news');
+    $query = $this->db->get()->result();
+
+    if ( ! empty($query)) {
+      foreach ($query as $item) {
+        $result[] = ['id_web' => $item->id_web, 'link' => $item->link];
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Update short link
+   *
+   * @param array $data News list to update [id_web,link_short]
+   *
+   * @return int Affected row
+   */
+  public function update_short_link_batch(array $data)
+  : int
+  {
+    $affected_row = 0;
+    if ( ! empty($data)) {
+      $affected_row = $this->db->update_batch('news', $data, 'id_web');
+    }
+
+    return $affected_row;
   }
 
 }
