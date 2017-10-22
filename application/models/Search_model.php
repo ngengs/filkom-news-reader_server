@@ -68,13 +68,14 @@ class Search_model extends FNR_Model
   /**
    * Function to get list of search news per page
    *
-   * @param string   $query    Search query text
-   * @param int      $page     Page now
-   * @param int|null $per_page News count per page
+   * @param bool     $full_link Is need full link?
+   * @param string   $query     Search query text
+   * @param int      $page      Page now
+   * @param int|null $per_page  News count per page
    *
    * @return array News List
    */
-  public function get(string $query, int $page = 1, ?int $per_page = 10)
+  public function get(bool $full_link, string $query, int $page = 1, ?int $per_page = 10)
   {
     $this->log->write_log(
       'debug',
@@ -97,7 +98,7 @@ class Search_model extends FNR_Model
     $this->db->like('search.title', $query);
     $this->db->join('news', 'news.id=search.id_news');
     $result_news = $this->db->get()->result();
-    $news = $this->generate_news_output($result_news);
+    $news = $this->generate_news_output($result_news, $full_link);
 
     return [
       'total_page' => $total_page,

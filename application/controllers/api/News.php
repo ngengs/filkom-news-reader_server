@@ -41,11 +41,13 @@ class News extends FNR_Controller
   public function list_get()
   {
     $page = $this->input->get('page') ?? 1;
+    $link = $this->input->get('link') ?? 'short';
     $this->log->write_log('debug', $this->TAG . ': list: $page: ' . $page);
     if ( ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter.', 404);
     }
-    $result = $this->news_model->get($page);
+    $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
+    $result = $this->news_model->get($full_link, $page);
     $this->response($result);
   }
 
@@ -60,7 +62,9 @@ class News extends FNR_Controller
   {
     $this->log->write_log('debug', $this->TAG . ': id_get: $id: ' . $id);
     if (empty($id)) $this->response_404();
-    $news = $this->news_model->get(1, 1, $id);
+    $link = $this->input->get('link') ?? 'short';
+    $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
+    $news = $this->news_model->get($full_link, 1, 1, $id);
     if (empty($news)) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'News ID not found', 404);
     }
@@ -90,7 +94,9 @@ class News extends FNR_Controller
   {
     $this->log->write_log('debug', $this->TAG . ': key_get: $key: ' . $key);
     if (empty($key)) $this->response_404();
-    $news = $this->news_model->get(1, 1, NULL, $key);
+    $link = $this->input->get('link') ?? 'short';
+    $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
+    $news = $this->news_model->get($full_link, 1, 1, NULL, $key);
     if (empty($news)) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'News Key not found', 404);
     }
@@ -119,6 +125,7 @@ class News extends FNR_Controller
   public function search_get()
   {
     $page = $this->input->get('page') ?? 1;
+    $link = $this->input->get('link') ?? 'short';
     $query = $this->input->get('q');
     $this->log->write_log('debug', $this->TAG . ': list: $query: ' . $query . ',$page: ' . $page);
     if (empty($query) OR ! is_numeric($page) OR $page <= 0) {
@@ -126,7 +133,8 @@ class News extends FNR_Controller
     }
     $this->load->model('search_model');
     $query = html_escape($query);
-    $result = $this->search_model->get($query, $page);
+    $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
+    $result = $this->search_model->get($full_link, $query, $page);
     $this->response($result);
   }
 }
