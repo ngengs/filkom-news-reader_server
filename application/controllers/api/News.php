@@ -36,7 +36,7 @@ class News extends FNR_Controller
    * API Get list of news
    * Path = news/list/
    * Method = GET
-   * Param = page
+   * Param = page, link(short,full)
    */
   public function list_get()
   {
@@ -56,7 +56,7 @@ class News extends FNR_Controller
    * Path = news/id/{$id}
    * Method = GET
    *
-   * @param string $id News Id
+   * @param string $id News Id, link(short,full)
    */
   public function id_get($id = NULL)
   {
@@ -88,7 +88,7 @@ class News extends FNR_Controller
    * Path = news/key/{$key}
    * Method = GET
    *
-   * @param string $key News Key
+   * @param string $key News Key, link(short,full)
    */
   public function key_get($key = NULL)
   {
@@ -119,7 +119,7 @@ class News extends FNR_Controller
    * API Get list of search news
    * Path = news/search
    * Method = GET
-   * Param = q (required), page
+   * Param = q (required), page, link(short,full)
    *
    */
   public function search_get()
