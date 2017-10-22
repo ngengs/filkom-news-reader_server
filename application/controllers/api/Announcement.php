@@ -35,16 +35,18 @@ class Announcement extends FNR_Controller
    * API Get list of news
    * Path = announcement/list/{$page}
    * Method = GET
-   * Param = page
+   * Param = page, link(short,full)
    */
   public function list_get()
   {
     $page = $this->input->get('page') ?? 1;
+    $link = $this->input->get('link') ?? 'short';
     $this->log->write_log('debug', $this->TAG . ': list: $page: ' . $page);
     if ( ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter.', 404);
     }
-    $result = $this->announcements_model->get($page);
+    $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
+    $result = $this->announcements_model->get($full_link, $page);
     $this->response($result);
   }
 
@@ -52,19 +54,21 @@ class Announcement extends FNR_Controller
    * API Get list of search news
    * Path = announcement/search
    * Method = GET
-   * Param = q (required), page
+   * Param = q (required), page, link(short,full)
    *
    */
   public function search_get()
   {
     $page = $this->input->get('page') ?? 1;
     $query = $this->input->get('q');
+    $link = $this->input->get('link') ?? 'short';
     $this->log->write_log('debug', $this->TAG . ': list: $query: ' . $query . ',$page: ' . $page);
     if (empty($query) OR ! is_numeric($page) OR $page <= 0) {
       $this->response_error(VALUE_STATUS_CODE_ERROR, 'Wrong URL Parameter', 404);
     }
     $query = html_escape($query);
-    $result = $this->announcements_model->get($page, 10, $query);
+    $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
+    $result = $this->announcements_model->get($full_link, $page, 10, $query);
     $this->response($result);
   }
 
