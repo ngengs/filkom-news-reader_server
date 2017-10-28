@@ -243,6 +243,8 @@ class Crawler extends FNR_Controller
       $this->TAG . ': news: ' . json_encode($id_web_news) . ', announcement: ' .
       json_encode($id_web_announcement));
     $fcm_key = $this->config->item('fcm_server_key');
+    $topics_news = $this->config->item('fcm_topic_news');
+    $topic_announcement = $this->config->item('fcm_topic_announcement');
     if ( ! empty($fcm_key)) {
       $send_news = [];
       $send_announcement = [];
@@ -269,12 +271,12 @@ class Crawler extends FNR_Controller
       }
       if (is_array($fcm_key)) {
         foreach ($fcm_key as $key) {
-          $this->send_notification($key, 'subscribe_news', $send_news);
-          $this->send_notification($key, 'subscribe_announcement', $send_announcement);
+          $this->send_notification($key, $topics_news, $send_news);
+          $this->send_notification($key, $topic_announcement, $send_announcement);
         }
       } else {
-        $this->send_notification($fcm_key, 'subscribe_news', $send_news);
-        $this->send_notification($fcm_key, 'subscribe_announcement', $send_announcement);
+        $this->send_notification($fcm_key, $topics_news, $send_news);
+        $this->send_notification($fcm_key, $topic_announcement, $send_announcement);
       }
     }
   }
