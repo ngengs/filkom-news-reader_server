@@ -195,7 +195,13 @@ class Announcements_model extends FNR_Model
     ];
   }
 
-
+  /**
+   * Function to get announcement data with given id_web
+   *
+   * @param array|null $id_web List of id_web to get the data
+   *
+   * @return array List of detail announcement [title]
+   */
   public function get_id_web(?array $id_web)
   {
     $result = [];
