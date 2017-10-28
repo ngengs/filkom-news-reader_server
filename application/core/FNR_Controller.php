@@ -55,7 +55,9 @@ class FNR_Controller extends CI_Controller
   : array
   {
     $this->log->write_log('debug', $this->TAG . ': generate_response: ');
-    if ($message instanceof Exception) $message = $message->getMessage();
+    if ($message instanceof Exception) {
+      $message = $message->getMessage();
+    }
 
     return [
       KEY_STATUS => $status,

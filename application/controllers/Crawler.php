@@ -32,8 +32,11 @@ class Crawler extends FNR_Controller
     $this->config->load('web_config');
     $token_reserved = $this->config->item('crawler_token');
     $token_request = $this->input->post('crawler_token');
-    if (empty($token_reserved) && empty($token_request)) $this->response_404();
-    else if ($token_request !== $token_reserved) $this->response_404();
+    if (empty($token_reserved) && empty($token_request)) {
+      $this->response_404();
+    } else if ($token_request !== $token_reserved) {
+      $this->response_404();
+    }
     $this->load->model('news_model');
     $this->load->model('details_model');
     $this->load->model('search_model');
@@ -116,7 +119,9 @@ class Crawler extends FNR_Controller
         }
       });
     $result_insert = [];
-    if ( ! empty($news_list)) $result_insert = $this->news_model->insert_batch($news_list);
+    if ( ! empty($news_list)) {
+      $result_insert = $this->news_model->insert_batch($news_list);
+    }
 
     return $result_insert;
   }
@@ -231,7 +236,9 @@ class Crawler extends FNR_Controller
         }
       });
     $result_print = [];
-    if ( ! empty($announcement)) $result_print = $this->announcements_model->insert_batch($announcement);
+    if ( ! empty($announcement)) {
+      $result_print = $this->announcements_model->insert_batch($announcement);
+    }
 
     return $result_print;
   }

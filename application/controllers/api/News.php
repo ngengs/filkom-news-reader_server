@@ -61,7 +61,9 @@ class News extends FNR_Controller
   public function id_get($id = NULL)
   {
     $this->log->write_log('debug', $this->TAG . ': id_get: $id: ' . $id);
-    if (empty($id)) $this->response_404();
+    if (empty($id)) {
+      $this->response_404();
+    }
     $link = $this->input->get('link') ?? 'short';
     $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
     $news = $this->news_model->get($full_link, 1, 1, $id);
@@ -93,7 +95,9 @@ class News extends FNR_Controller
   public function key_get($key = NULL)
   {
     $this->log->write_log('debug', $this->TAG . ': key_get: $key: ' . $key);
-    if (empty($key)) $this->response_404();
+    if (empty($key)) {
+      $this->response_404();
+    }
     $link = $this->input->get('link') ?? 'short';
     $full_link = (strtolower($link) === 'full') ? TRUE : FALSE;
     $news = $this->news_model->get($full_link, 1, 1, NULL, $key);
